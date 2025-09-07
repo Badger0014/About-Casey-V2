@@ -44,7 +44,7 @@
     /* Quote box */
     .carousel-container {
       position: relative;
-      min-height: 100px;
+      min-height: 120px;
       max-width: 600px;
       margin: 2rem auto 0;
       padding: 1.5rem;
@@ -52,10 +52,13 @@
       background: rgba(255, 255, 255, 0.05); /* transparent */
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       text-align: center;
       font-size: 1.05rem;
       line-height: 1.6;
+      overflow: hidden;
     }
     #quoteCarousel {
       opacity: 1;
@@ -165,8 +168,8 @@
         currentQuote = (currentQuote + 1) % quotes.length;
         quoteElement.textContent = quotes[currentQuote];
         quoteElement.style.opacity = 1;
-      }, 1000); // fade duration
-    }, 7500); // total display time per quote
+      }, 1000);
+    }, 7500);
 
     // Starry background with slow movement
     const canvas = document.getElementById("stars");
