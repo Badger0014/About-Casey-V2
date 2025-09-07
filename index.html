@@ -47,44 +47,61 @@
       filter: drop-shadow(0 0 20px rgba(255,255,255,1));
     }
 
-    /* Quote carousel */
+    /* Quote carousel box */
     .carousel-container {
       position: relative;
-      min-height: 80px;
-      max-width: 90%;
-      margin: 0 auto;
+      min-height: 120px;
+      max-width: 600px;
+      margin: 2rem auto 0;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
     }
     .quote {
       opacity: 0;
       position: absolute;
       width: 100%;
+      left: 0;
+      top: 0;
       text-align: center;
       font-size: 1rem;
-      line-height: 1.5;
+      line-height: 1.6;
       transition: opacity 1s ease;
       white-space: normal;
       word-wrap: break-word;
+      padding: 0.5rem;
     }
-    .quote.active { opacity: 1; }
+    .quote.active { opacity: 1; position: relative; }
     @media (min-width: 640px) {
-      .quote { font-size: 1.25rem; }
+      .quote { font-size: 1.1rem; }
     }
 
     /* Enter screen */
     #enter-screen {
       background: radial-gradient(circle at center, #1a1a1a, #000);
+      cursor: pointer;
     }
-    #enter-btn {
-      background: linear-gradient(90deg, #8a2be2, #da70d6);
-      color: white;
-      font-weight: 600;
-      padding: 0.75rem 2rem;
-      border-radius: 9999px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    #enter-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(255,255,255,0.8);
+      animation: pulse 2s infinite;
     }
-    #enter-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(218,112,214,0.8);
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Starry background */
+    canvas#stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
     }
   </style>
 </head>
@@ -92,8 +109,8 @@
 
   <!-- ENTER SCREEN -->
   <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 fade">
-    <h1 class="text-3xl sm:text-4xl font-bold mb-6">Click to Enter</h1>
-    <button id="enter-btn">Enter</button>
+    <canvas id="stars"></canvas>
+    <h1 id="enter-text">Click Anywhere to Enter</h1>
   </div>
 
   <!-- MAIN PAGE -->
@@ -109,7 +126,7 @@
       <div class="flex gap-6 sm:gap-8 mt-6">
         <!-- Roblox -->
         <a href="https://www.roblox.com/users/560006886/profile" target="_blank">
-          <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="Roblox">
+          <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="Roblox" class="w-10 sm:w-12 icon-glow">
         </a>
         <!-- Spotify -->
         <a href="https://open.spotify.com/user/31cbhv3gg66spjjweortqjluhzfm" target="_blank">
@@ -117,15 +134,15 @@
         </a>
         <!-- TikTok -->
         <a href="https://www.tiktok.com/@goooddinosaur" target="_blank">
-          <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok">
+          <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok" class="w-10 sm:w-12 icon-glow">
         </a>
       </div>
 
       <!-- Quotes Carousel -->
       <div class="carousel-container mt-10 text-gray-200">
-        <div class="quote active">“Talk less. Smile more.” – Aaron Burr</div>
-        <div class="quote">“History has its eyes on you.” – George Washington</div>
-        <div class="quote">“Legacy. What is a legacy? It’s planting seeds in a garden you never get to see.” – Alexander Hamilton</div>
+        <div class="quote active"><p>“Talk less. Smile more.”</p><p>– Aaron Burr</p></div>
+        <div class="quote"><p>“History has its eyes on you.”</p><p>– George Washington</p></div>
+        <div class="quote"><p>“Legacy. What is a legacy? It’s planting seeds in a garden you never get to see.”</p><p>– Alexander Hamilton</p></div>
       </div>
     </div>
   </div>
@@ -137,12 +154,11 @@
 
   <script>
     // Click-to-enter logic
-    const enterBtn = document.getElementById("enter-btn");
     const enterScreen = document.getElementById("enter-screen");
     const mainContent = document.getElementById("main-content");
     const music = document.getElementById("bg-music");
 
-    enterBtn.addEventListener("click", () => {
+    enterScreen.addEventListener("click", () => {
       enterScreen.classList.add("hidden");
       setTimeout(() => {
         mainContent.classList.remove("hidden");
@@ -157,7 +173,43 @@
       quotes[current].classList.remove("active");
       current = (current + 1) % quotes.length;
       quotes[current].classList.add("active");
-    }, 5000); // fade every 5s for smoother timing
+    }, 5000);
+
+    // Starry background
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({length: 150}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.02 + 0.01
+      }));
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.alpha += star.speed * (Math.random() > 0.5 ? 1 : -1);
+        if (star.alpha <= 0) star.alpha = 0.1;
+        if (star.alpha >= 1) star.alpha = 1;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(animateStars);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animateStars();
   </script>
 </body>
 </html>
