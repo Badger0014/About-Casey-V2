@@ -21,12 +21,12 @@
     .hidden { opacity: 0; pointer-events: none; }
 
     /* Banner + Profile */
-    .banner { width: 100%; height: 160px; object-fit: cover; }
+    .banner { width: 100%; height: 140px; object-fit: cover; }
     .pfp {
-      width: 120px; height: 120px;
+      width: 110px; height: 110px;
       border-radius: 50%;
       border: 4px solid white;
-      margin-top: -60px;
+      margin-top: -55px;
       object-fit: cover;
       box-shadow: 0 0 20px rgba(255,255,255,0.6);
     }
@@ -41,17 +41,17 @@
       filter: drop-shadow(0 0 20px rgba(255,255,255,1));
     }
 
-    /* Quote box */
+    /* Quote box (subtle transparent like guns.lol) */
     .carousel-container {
       position: relative;
       min-height: 100px;
       max-width: 600px;
       margin: 2rem auto 0;
-      padding: 1.5rem;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.2rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       overflow: hidden;
     }
     .quote {
@@ -61,7 +61,7 @@
       text-align: center;
       font-size: 1rem;
       line-height: 1.6;
-      transition: opacity 2s ease;
+      transition: opacity 3s ease;
     }
     .quote.active {
       opacity: 1;
@@ -71,10 +71,13 @@
     /* Enter screen */
     #enter-screen {
       cursor: pointer;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     #enter-text {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       text-shadow: 0 0 15px rgba(255,255,255,0.8);
       animation: pulse 2s infinite;
@@ -99,7 +102,7 @@
   <canvas id="stars"></canvas>
 
   <!-- ENTER SCREEN -->
-  <div id="enter-screen" class="fixed inset-0 flex justify-center items-center z-40 fade">
+  <div id="enter-screen" class="fixed inset-0 z-40 fade">
     <h1 id="enter-text">Click Anywhere to Enter</h1>
   </div>
 
@@ -144,23 +147,25 @@
     const mainContent = document.getElementById("main-content");
     const music = document.getElementById("bg-music");
 
-    // Click anywhere to enter
+    // Click anywhere to enter with smooth fade
     enterScreen.addEventListener("click", () => {
-      enterScreen.classList.add("hidden");
+      enterScreen.style.opacity = "0";
       mainContent.classList.remove("hidden");
+      mainContent.style.opacity = "1";
+      setTimeout(() => enterScreen.style.display = "none", 1500);
       music.play().catch(() => console.log("Music autoplay blocked"));
     });
 
-    // Quote carousel with smooth crossfade
+    // Quote carousel (smooth crossfade)
     const quotes = document.querySelectorAll(".quote");
     let current = 0;
     setInterval(() => {
       quotes[current].classList.remove("active");
       current = (current + 1) % quotes.length;
       quotes[current].classList.add("active");
-    }, 6000);
+    }, 7000);
 
-    // Starry background
+    // Starry background with slow movement
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -168,13 +173,13 @@
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      stars = Array.from({length: 150}, () => ({
+      stars = Array.from({length: 120}, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5,
         alpha: Math.random(),
-        speedX: (Math.random() - 0.5) * 0.1,
-        speedY: (Math.random() - 0.5) * 0.1
+        speedX: (Math.random() - 0.5) * 0.05,
+        speedY: (Math.random() - 0.5) * 0.05
       }));
     }
 
@@ -187,6 +192,7 @@
         if (star.x > canvas.width) star.x = 0;
         if (star.y < 0) star.y = canvas.height;
         if (star.y > canvas.height) star.y = 0;
+
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
