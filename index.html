@@ -21,9 +21,9 @@
     .hidden { opacity: 0; pointer-events: none; }
 
     /* Banner + Profile */
-    .banner { width: 100%; height: 200px; object-fit: cover; }
+    .banner { width: 100%; height: 150px; object-fit: cover; }
     @media (min-width: 640px) {
-      .banner { height: 250px; }
+      .banner { height: 180px; }
     }
     .pfp {
       width: 100px; height: 100px;
@@ -70,8 +70,6 @@
       font-size: 1rem;
       line-height: 1.6;
       transition: opacity 1s ease;
-      white-space: normal;
-      word-wrap: break-word;
       padding: 0.5rem;
     }
     .quote.active { opacity: 1; position: relative; }
@@ -81,8 +79,8 @@
 
     /* Enter screen */
     #enter-screen {
-      background: radial-gradient(circle at center, #1a1a1a, #000);
       cursor: pointer;
+      background: transparent;
     }
     #enter-text {
       font-size: 1.5rem;
@@ -107,9 +105,11 @@
 </head>
 <body>
 
+  <!-- Starry background -->
+  <canvas id="stars"></canvas>
+
   <!-- ENTER SCREEN -->
-  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 fade">
-    <canvas id="stars"></canvas>
+  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-40 fade bg-black bg-opacity-70">
     <h1 id="enter-text">Click Anywhere to Enter</h1>
   </div>
 
@@ -130,7 +130,7 @@
         </a>
         <!-- Spotify -->
         <a href="https://open.spotify.com/user/31cbhv3gg66spjjweortqjluhzfm" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" class="w-10 sm:w-12 icon-glow">
+          <img src="https://cdn.simpleicons.org/spotify/ffffff" alt="Spotify" class="w-10 sm:w-12 icon-glow">
         </a>
         <!-- TikTok -->
         <a href="https://www.tiktok.com/@goooddinosaur" target="_blank">
@@ -159,10 +159,12 @@
     const music = document.getElementById("bg-music");
 
     enterScreen.addEventListener("click", () => {
-      enterScreen.classList.add("hidden");
+      enterScreen.style.opacity = "0";
       setTimeout(() => {
+        enterScreen.style.display = "none";
         mainContent.classList.remove("hidden");
-      }, 800);
+        mainContent.style.opacity = "1";
+      }, 1000);
       music.play().catch(() => console.log("Music autoplay blocked"));
     });
 
@@ -175,7 +177,7 @@
       quotes[current].classList.add("active");
     }, 5000);
 
-    // Starry background
+    // Starry background with moving stars
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -188,16 +190,21 @@
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5,
         alpha: Math.random(),
-        speed: Math.random() * 0.02 + 0.01
+        speedX: (Math.random() - 0.5) * 0.1,
+        speedY: (Math.random() - 0.5) * 0.1
       }));
     }
 
     function animateStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       stars.forEach(star => {
-        star.alpha += star.speed * (Math.random() > 0.5 ? 1 : -1);
-        if (star.alpha <= 0) star.alpha = 0.1;
-        if (star.alpha >= 1) star.alpha = 1;
+        star.x += star.speedX;
+        star.y += star.speedY;
+
+        if (star.x < 0) star.x = canvas.width;
+        if (star.x > canvas.width) star.x = 0;
+        if (star.y < 0) star.y = canvas.height;
+        if (star.y > canvas.height) star.y = 0;
 
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
