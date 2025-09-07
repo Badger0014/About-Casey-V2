@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera - Digital Creator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    /* === Your custom CSS variables and styles === */
+    :root {
+      --primary: 262 83% 58%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 220 14% 96%;
+      --secondary-foreground: 220.9 39.3% 11%;
+      --muted: 220 14% 96%;
+      --muted-foreground: 220 8.9% 46.1%;
+      --accent: 220 14% 96%;
+      --accent-foreground: 220.9 39.3% 11%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 220 13% 91%;
+      --input: 220 13% 91%;
+      --ring: 262 83% 58%;
+      --background: 0 0% 100%;
+      --foreground: 220.9 39.3% 11%;
+      --transition-smooth: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dark {
+      --primary: 262 83% 58%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 262 83% 58%;
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      transition: var(--transition-smooth);
+    }
+    .dark { color-scheme: dark; }
+    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+    .glow { box-shadow: 0 0 20px rgba(138,43,226,0.3); }
+    .animate-fade-in { animation: fadeIn 1.2s ease-out; }
+    .animate-slide-up { animation: slideUp 1.5s ease-out; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+    @keyframes slideUp { from { opacity:0; transform:translateY(50px);} to {opacity:1; transform:translateY(0);} }
+  </style>
+</head>
+<body class="dark">
+  <!-- Particle background will be injected -->
+  <div id="app" class="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
+    <h1 class="text-4xl md:text-6xl font-bold animate-fade-in">Alex Rivera</h1>
+    <p class="mt-4 text-lg md:text-2xl text-gray-400 animate-slide-up">Digital Creator • Designer • Developer</p>
+    <div class="mt-6 flex gap-4 animate-slide-up">
+      <a href="https://github.com/" target="_blank" class="btn btn-primary">GitHub</a>
+      <a href="https://linkedin.com/" target="_blank" class="btn btn-ghost">LinkedIn</a>
+    </div>
+  </div>
+
+  <script>
+    // Particle background
+    function createParticleBackground() {
+      const canvas = document.createElement('canvas');
+      canvas.style.position = 'fixed';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '1';
+
+      document.body.prepend(canvas);
+
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      function createParticles() {
+        particles = [];
+        const count = Math.floor((canvas.width * canvas.height) / 10000);
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.5 + 0.3
+          });
+        }
+      }
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      resizeCanvas();
+      createParticles();
+      animate();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
+      });
+    }
+    createParticleBackground();
+  </script>
+</body>
+</html>
