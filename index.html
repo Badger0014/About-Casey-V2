@@ -21,20 +21,14 @@
     .hidden { opacity: 0; pointer-events: none; }
 
     /* Banner + Profile */
-    .banner { width: 100%; height: 140px; object-fit: cover; }
-    @media (min-width: 640px) {
-      .banner { height: 160px; }
-    }
+    .banner { width: 100%; height: 160px; object-fit: cover; }
     .pfp {
-      width: 100px; height: 100px;
+      width: 120px; height: 120px;
       border-radius: 50%;
       border: 4px solid white;
-      margin-top: -50px;
+      margin-top: -60px;
       object-fit: cover;
       box-shadow: 0 0 20px rgba(255,255,255,0.6);
-    }
-    @media (min-width: 640px) {
-      .pfp { width: 120px; height: 120px; margin-top: -60px; }
     }
 
     /* Glowing social icons */
@@ -47,46 +41,41 @@
       filter: drop-shadow(0 0 20px rgba(255,255,255,1));
     }
 
-    /* Quote carousel box */
+    /* Quote box */
     .carousel-container {
       position: relative;
-      min-height: 120px;
+      min-height: 100px;
       max-width: 600px;
       margin: 2rem auto 0;
-      padding: 1.2rem 1.5rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.05); /* subtle transparency */
-      backdrop-filter: blur(12px);
+      padding: 1.5rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 30px rgba(255,255,255,0.08);
       overflow: hidden;
     }
     .quote {
       opacity: 0;
       position: absolute;
       width: 100%;
-      left: 0;
-      top: 0;
       text-align: center;
       font-size: 1rem;
       line-height: 1.6;
-      transition: opacity 1.5s ease; /* smoother crossfade */
-      padding: 0.5rem;
+      transition: opacity 2s ease;
     }
-    .quote.active { opacity: 1; position: relative; }
-    @media (min-width: 640px) {
-      .quote { font-size: 1.1rem; }
+    .quote.active {
+      opacity: 1;
+      position: relative;
     }
 
     /* Enter screen */
     #enter-screen {
       cursor: pointer;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0,0,0,0.9);
     }
     #enter-text {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #fff;
       text-shadow: 0 0 15px rgba(255,255,255,0.8);
       animation: pulse 2s infinite;
     }
@@ -110,7 +99,7 @@
   <canvas id="stars"></canvas>
 
   <!-- ENTER SCREEN -->
-  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-40 fade">
+  <div id="enter-screen" class="fixed inset-0 flex justify-center items-center z-40 fade">
     <h1 id="enter-text">Click Anywhere to Enter</h1>
   </div>
 
@@ -124,16 +113,13 @@
       <p class="text-base sm:text-lg text-gray-400 mt-2">Digital Spectacular • Selfless • Serene</p>
 
       <!-- Social Icons -->
-      <div class="flex gap-6 sm:gap-8 mt-6">
-        <!-- Roblox -->
+      <div class="flex gap-8 mt-6">
         <a href="https://www.roblox.com/users/560006886/profile" target="_blank">
           <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="Roblox" class="w-10 sm:w-12 icon-glow">
         </a>
-        <!-- Spotify -->
         <a href="https://open.spotify.com/user/31cbhv3gg66spjjweortqjluhzfm" target="_blank">
           <img src="https://cdn.simpleicons.org/spotify/ffffff" alt="Spotify" class="w-10 sm:w-12 icon-glow">
         </a>
-        <!-- TikTok -->
         <a href="https://www.tiktok.com/@goooddinosaur" target="_blank">
           <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok" class="w-10 sm:w-12 icon-glow">
         </a>
@@ -154,14 +140,15 @@
   </audio>
 
   <script>
-    // Click-to-enter logic
     const enterScreen = document.getElementById("enter-screen");
     const mainContent = document.getElementById("main-content");
     const music = document.getElementById("bg-music");
 
+    // Click anywhere to enter
     enterScreen.addEventListener("click", () => {
       enterScreen.classList.add("hidden");
       mainContent.classList.remove("hidden");
+      music.play().catch(() => console.log("Music autoplay blocked"));
     });
 
     // Quote carousel with smooth crossfade
@@ -171,9 +158,9 @@
       quotes[current].classList.remove("active");
       current = (current + 1) % quotes.length;
       quotes[current].classList.add("active");
-    }, 6000); // slower & smoother timing
+    }, 6000);
 
-    // Starry background with moving stars
+    // Starry background
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -181,13 +168,13 @@
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      stars = Array.from({length: 200}, () => ({
+      stars = Array.from({length: 150}, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5,
         alpha: Math.random(),
-        speedX: (Math.random() - 0.5) * 0.05,
-        speedY: (Math.random() - 0.5) * 0.05
+        speedX: (Math.random() - 0.5) * 0.1,
+        speedY: (Math.random() - 0.5) * 0.1
       }));
     }
 
@@ -196,12 +183,10 @@
       stars.forEach(star => {
         star.x += star.speedX;
         star.y += star.speedY;
-
         if (star.x < 0) star.x = canvas.width;
         if (star.x > canvas.width) star.x = 0;
         if (star.y < 0) star.y = canvas.height;
         if (star.y > canvas.height) star.y = 0;
-
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
