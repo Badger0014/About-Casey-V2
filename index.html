@@ -1,131 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alex Rivera - Digital Creator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Casey - goooddinosaur</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-    /* === Your custom CSS variables and styles === */
-    :root {
-      --primary: 262 83% 58%;
-      --primary-foreground: 210 40% 98%;
-      --secondary: 220 14% 96%;
-      --secondary-foreground: 220.9 39.3% 11%;
-      --muted: 220 14% 96%;
-      --muted-foreground: 220 8.9% 46.1%;
-      --accent: 220 14% 96%;
-      --accent-foreground: 220.9 39.3% 11%;
-      --destructive: 0 84% 60%;
-      --destructive-foreground: 210 40% 98%;
-      --border: 220 13% 91%;
-      --input: 220 13% 91%;
-      --ring: 262 83% 58%;
-      --background: 0 0% 100%;
-      --foreground: 220.9 39.3% 11%;
-      --transition-smooth: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .dark {
-      --primary: 262 83% 58%;
-      --primary-foreground: 210 40% 98%;
-      --secondary: 217.2 32.6% 17.5%;
-      --secondary-foreground: 210 40% 98%;
-      --muted: 217.2 32.6% 17.5%;
-      --muted-foreground: 215 20.2% 65.1%;
-      --accent: 217.2 32.6% 17.5%;
-      --accent-foreground: 210 40% 98%;
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 210 40% 98%;
-      --border: 217.2 32.6% 17.5%;
-      --input: 217.2 32.6% 17.5%;
-      --ring: 262 83% 58%;
-      --background: 222.2 84% 4.9%;
-      --foreground: 210 40% 98%;
-    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: hsl(var(--background));
-      color: hsl(var(--foreground));
-      transition: var(--transition-smooth);
+      margin: 0;
+      background: #0d0d0d;
+      color: #fff;
+      overflow-x: hidden;
     }
-    .dark { color-scheme: dark; }
-    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-    .glow { box-shadow: 0 0 20px rgba(138,43,226,0.3); }
-    .animate-fade-in { animation: fadeIn 1.2s ease-out; }
-    .animate-slide-up { animation: slideUp 1.5s ease-out; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-    @keyframes slideUp { from { opacity:0; transform:translateY(50px);} to {opacity:1; transform:translateY(0);} }
+
+    /* Fade transitions */
+    .fade { transition: opacity 1s ease; }
+    .hidden { opacity: 0; pointer-events: none; }
+
+    /* Banner + Profile */
+    .banner { width: 100%; height: 250px; object-fit: cover; }
+    .pfp {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      margin-top: -60px;
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(255,255,255,0.6);
+    }
+
+    /* Glowing social icons */
+    .icon-glow {
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.9));
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .icon-glow:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 20px rgba(255,255,255,1));
+    }
+
+    /* Quote carousel */
+    .carousel-container { position: relative; height: 80px; }
+    .quote {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 1.25rem;
+      transition: opacity 1s ease;
+    }
+    .quote.active { opacity: 1; }
+
+    /* Enter screen */
+    #enter-screen {
+      background: radial-gradient(circle at center, #1a1a1a, #000);
+    }
+    #enter-btn {
+      background: linear-gradient(90deg, #8a2be2, #da70d6);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #enter-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(218,112,214,0.8);
+    }
   </style>
 </head>
-<body class="dark">
-  <!-- Particle background will be injected -->
-  <div id="app" class="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
-    <h1 class="text-4xl md:text-6xl font-bold animate-fade-in">Alex Rivera</h1>
-    <p class="mt-4 text-lg md:text-2xl text-gray-400 animate-slide-up">Digital Creator • Designer • Developer</p>
-    <div class="mt-6 flex gap-4 animate-slide-up">
-      <a href="https://github.com/" target="_blank" class="btn btn-primary">GitHub</a>
-      <a href="https://linkedin.com/" target="_blank" class="btn btn-ghost">LinkedIn</a>
+<body>
+
+  <!-- ENTER SCREEN -->
+  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 fade">
+    <h1 class="text-4xl font-bold mb-6">Click to Enter</h1>
+    <button id="enter-btn">Enter</button>
+  </div>
+
+  <!-- MAIN PAGE -->
+  <div id="main-content" class="hidden fade relative z-10">
+    <!-- Banner + Profile -->
+    <img src="banner.jpg" alt="Banner" class="banner">
+    <div class="flex flex-col items-center text-center px-6">
+      <img src="pfp.jpg" alt="Profile Picture" class="pfp">
+      <h1 class="text-3xl md:text-5xl font-bold mt-4">Alex Rivera</h1>
+      <p class="text-lg text-gray-400 mt-2">Digital Creator • Designer • Developer</p>
+
+      <!-- Social Icons -->
+      <div class="flex gap-8 mt-6">
+        <!-- Roblox -->
+        <a href="https://www.roblox.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Roblox_logo_2022.svg" alt="Roblox" class="w-12 icon-glow">
+        </a>
+        <!-- Spotify -->
+        <a href="https://spotify.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" class="w-12 icon-glow">
+        </a>
+        <!-- TikTok -->
+        <a href="https://tiktok.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/TikTok_logo.svg" alt="TikTok" class="w-12 icon-glow">
+        </a>
+      </div>
+
+      <!-- Quotes Carousel -->
+      <div class="carousel-container mt-10 text-gray-200">
+        <div class="quote active">""Talk Less. Smile More."" – Aaron Burr</div>
+        <div class="quote">"“History has its eyes on you.”" – George Washington</div>
+        <div class="quote">"“Legacy. What is a legacy? It’s planting seeds in a garden you never get to see.”" – Alexander Hamilton</div>
+      </div>
     </div>
   </div>
 
+  <!-- Background Music -->
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
   <script>
-    // Particle background
-    function createParticleBackground() {
-      const canvas = document.createElement('canvas');
-      canvas.style.position = 'fixed';
-      canvas.style.top = '0';
-      canvas.style.left = '0';
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      canvas.style.pointerEvents = 'none';
-      canvas.style.zIndex = '1';
+    // Click-to-enter logic
+    const enterBtn = document.getElementById("enter-btn");
+    const enterScreen = document.getElementById("enter-screen");
+    const mainContent = document.getElementById("main-content");
+    const music = document.getElementById("bg-music");
 
-      document.body.prepend(canvas);
+    enterBtn.addEventListener("click", () => {
+      enterScreen.classList.add("hidden");
+      setTimeout(() => {
+        mainContent.classList.remove("hidden");
+      }, 800);
+      music.play().catch(() => console.log("Music autoplay blocked"));
+    });
 
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      function createParticles() {
-        particles = [];
-        const count = Math.floor((canvas.width * canvas.height) / 10000);
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            size: Math.random() * 2 + 1,
-            opacity: Math.random() * 0.5 + 0.3
-          });
-        }
-      }
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
-          ctx.fill();
-        });
-        requestAnimationFrame(animate);
-      }
-      resizeCanvas();
-      createParticles();
-      animate();
-      window.addEventListener('resize', () => {
-        resizeCanvas();
-        createParticles();
-      });
-    }
-    createParticleBackground();
+    // Quote carousel
+    const quotes = document.querySelectorAll(".quote");
+    let current = 0;
+    setInterval(() => {
+      quotes[current].classList.remove("active");
+      current = (current + 1) % quotes.length;
+      quotes[current].classList.add("active");
+    }, 4000);
   </script>
 </body>
 </html>
