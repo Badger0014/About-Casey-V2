@@ -17,13 +17,13 @@
     }
 
     /* Fade transitions */
-    .fade { transition: opacity 1s ease; }
+    .fade { transition: opacity 1.5s ease; }
     .hidden { opacity: 0; pointer-events: none; }
 
     /* Banner + Profile */
-    .banner { width: 100%; height: 150px; object-fit: cover; }
+    .banner { width: 100%; height: 140px; object-fit: cover; }
     @media (min-width: 640px) {
-      .banner { height: 180px; }
+      .banner { height: 160px; }
     }
     .pfp {
       width: 100px; height: 100px;
@@ -53,12 +53,13 @@
       min-height: 120px;
       max-width: 600px;
       margin: 2rem auto 0;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      padding: 1.2rem 1.5rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05); /* subtle transparency */
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(255,255,255,0.08);
+      overflow: hidden;
     }
     .quote {
       opacity: 0;
@@ -69,7 +70,7 @@
       text-align: center;
       font-size: 1rem;
       line-height: 1.6;
-      transition: opacity 1s ease;
+      transition: opacity 1.5s ease; /* smoother crossfade */
       padding: 0.5rem;
     }
     .quote.active { opacity: 1; position: relative; }
@@ -80,7 +81,7 @@
     /* Enter screen */
     #enter-screen {
       cursor: pointer;
-      background: transparent;
+      background: rgba(0, 0, 0, 0.85);
     }
     #enter-text {
       font-size: 1.5rem;
@@ -109,7 +110,7 @@
   <canvas id="stars"></canvas>
 
   <!-- ENTER SCREEN -->
-  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-40 fade bg-black bg-opacity-70">
+  <div id="enter-screen" class="fixed inset-0 flex flex-col justify-center items-center z-40 fade">
     <h1 id="enter-text">Click Anywhere to Enter</h1>
   </div>
 
@@ -159,23 +160,18 @@
     const music = document.getElementById("bg-music");
 
     enterScreen.addEventListener("click", () => {
-      enterScreen.style.opacity = "0";
-      setTimeout(() => {
-        enterScreen.style.display = "none";
-        mainContent.classList.remove("hidden");
-        mainContent.style.opacity = "1";
-      }, 1000);
-      music.play().catch(() => console.log("Music autoplay blocked"));
+      enterScreen.classList.add("hidden");
+      mainContent.classList.remove("hidden");
     });
 
-    // Quote carousel
+    // Quote carousel with smooth crossfade
     const quotes = document.querySelectorAll(".quote");
     let current = 0;
     setInterval(() => {
       quotes[current].classList.remove("active");
       current = (current + 1) % quotes.length;
       quotes[current].classList.add("active");
-    }, 5000);
+    }, 6000); // slower & smoother timing
 
     // Starry background with moving stars
     const canvas = document.getElementById("stars");
@@ -185,13 +181,13 @@
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      stars = Array.from({length: 150}, () => ({
+      stars = Array.from({length: 200}, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5,
         alpha: Math.random(),
-        speedX: (Math.random() - 0.5) * 0.1,
-        speedY: (Math.random() - 0.5) * 0.1
+        speedX: (Math.random() - 0.5) * 0.05,
+        speedY: (Math.random() - 0.5) * 0.05
       }));
     }
 
