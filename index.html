@@ -41,31 +41,30 @@
       filter: drop-shadow(0 0 20px rgba(255,255,255,1));
     }
 
-    /* Quote box (subtle transparent like guns.lol) */
+    /* Quote box */
     .carousel-container {
       position: relative;
       min-height: 100px;
       max-width: 600px;
       margin: 2rem auto 0;
-      padding: 1.2rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.5rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       overflow: hidden;
     }
     .quote {
-      opacity: 0;
-      position: absolute;
+      display: none; /* Only active quote shown */
       width: 100%;
       text-align: center;
       font-size: 1rem;
       line-height: 1.6;
-      transition: opacity 3s ease;
+      transition: opacity 2s ease;
     }
     .quote.active {
+      display: block;
       opacity: 1;
-      position: relative;
     }
 
     /* Enter screen */
@@ -147,7 +146,7 @@
     const mainContent = document.getElementById("main-content");
     const music = document.getElementById("bg-music");
 
-    // Click anywhere to enter with smooth fade
+    // Smooth enter transition
     enterScreen.addEventListener("click", () => {
       enterScreen.style.opacity = "0";
       mainContent.classList.remove("hidden");
@@ -156,14 +155,17 @@
       music.play().catch(() => console.log("Music autoplay blocked"));
     });
 
-    // Quote carousel (smooth crossfade)
+    // Smooth quote carousel
     const quotes = document.querySelectorAll(".quote");
     let current = 0;
-    setInterval(() => {
+
+    function showNextQuote() {
       quotes[current].classList.remove("active");
       current = (current + 1) % quotes.length;
       quotes[current].classList.add("active");
-    }, 7000);
+    }
+
+    setInterval(showNextQuote, 7000);
 
     // Starry background with slow movement
     const canvas = document.getElementById("stars");
